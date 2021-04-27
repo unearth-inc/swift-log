@@ -717,17 +717,13 @@ extension Logger {
         /// A metadata value which is some `CustomStringConvertible`.
         case stringConvertible(CustomStringConvertible)
 
-        /// A metadata value which is a dictionary from `String` to `Logger.MetadataValue`.
-        ///
-        /// Because `MetadataValue` implements `ExpressibleByDictionaryLiteral`, you don't need to type
-        /// `.dictionary(["foo": .string("bar \(buz)")])`, you can just use the more natural `["foo": "bar \(buz)"]`.
-        case dictionary(Metadata)
-
         /// A metadata value which is an array of `Logger.MetadataValue`s.
         ///
         /// Because `MetadataValue` implements `ExpressibleByArrayLiteral`, you don't need to type
         /// `.array([.string("foo"), .string("bar \(buz)")])`, you can just use the more natural `["foo", "bar \(buz)"]`.
         case array([Metadata.Value])
+        
+        case dictionary([String: Any])
     }
 
     /// The log level.
@@ -838,7 +834,7 @@ extension Logger.MetadataValue: Equatable {
         case (.array(let lhs), .array(let rhs)):
             return lhs == rhs
         case (.dictionary(let lhs), .dictionary(let rhs)):
-            return lhs == rhs
+            return lhs.description == rhs.description
         default:
             return false
         }
@@ -1213,7 +1209,7 @@ extension Logger.MetadataValue: CustomStringConvertible {
     public var description: String {
         switch self {
         case .dictionary(let dict):
-            return dict.mapValues { $0.description }.description
+            return dict.description
         case .array(let list):
             return list.map { $0.description }.description
         case .string(let str):
@@ -1232,9 +1228,9 @@ extension Logger.MetadataValue: ExpressibleByStringInterpolation {}
 // https://bugs.swift.org/browse/SR-9686
 extension Logger.MetadataValue: ExpressibleByDictionaryLiteral {
     public typealias Key = String
-    public typealias Value = Logger.Metadata.Value
+    public typealias Value = Any
 
-    public init(dictionaryLiteral elements: (String, Logger.Metadata.Value)...) {
+    public init(dictionaryLiteral elements: (String, Any)...) {
         self = .dictionary(.init(uniqueKeysWithValues: elements))
     }
 }
