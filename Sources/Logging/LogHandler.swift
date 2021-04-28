@@ -127,9 +127,10 @@ public protocol LogHandler {
     ///     - function: The function the log line was emitted from.
     ///     - line: The line the log message was emitted from.
     func log(level: Logger.Level,
-             message: Logger.Message,
-             metadata: Logger.Metadata?,
-             source: String,
+             message:  @autoclosure () -> Logger.Message,
+             metadata:  @autoclosure () -> Logger.Metadata?,
+             tags: Logger.Tags?,
+             source:  @autoclosure () -> String,
              file: String,
              function: String,
              line: UInt)
@@ -162,6 +163,8 @@ public protocol LogHandler {
     ///         that means a change in log level on a particular `LogHandler` might not be reflected in any
     ///        `LogHandler`.
     var logLevel: Logger.Level { get set }
+    
+    var tagsFilter: Logger.Tags { get set }
 }
 
 // Unearth fork: prevent use of deprecated methods -- no reason to maintain internally

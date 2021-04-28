@@ -73,15 +73,18 @@ extension Logger {
     public func log(level: Logger.Level,
                     _ message: @autoclosure () -> Logger.Message,
                     metadata: @autoclosure () -> Logger.Metadata? = nil,
+                    tags: Logger.Tags? = nil,
                     source: @autoclosure () -> String? = nil,
                     file: String = #fileID, function: String = #function, line: UInt = #line) {
-        if self.logLevel <= level {
-            self.handler.log(level: level,
-                             message: message(),
-                             metadata: metadata(),
-                             source: source() ?? Logger.currentModule(fileID: (file)),
-                             file: file, function: function, line: line)
-        }
+        guard self.logLevel <= level &&
+                (tags == nil || !self.tagsFilter.isDisjoint(with: tags!)) else { return }
+        
+        self.handler.log(level: level,
+                         message: message(),
+                         metadata: metadata(),
+                         tags: tags,
+                         source: source() ?? Logger.currentModule(fileID: (file)),
+                         file: file, function: function, line: line)
     }
 
     #else
@@ -89,15 +92,18 @@ extension Logger {
     public func log(level: Logger.Level,
                     _ message: @autoclosure () -> Logger.Message,
                     metadata: @autoclosure () -> Logger.Metadata? = nil,
+                    tags: Logger.Tags? = nil,
                     source: @autoclosure () -> String? = nil,
                     file: String = #file, function: String = #function, line: UInt = #line) {
-        if self.logLevel <= level {
-            self.handler.log(level: level,
-                             message: message(),
-                             metadata: metadata(),
-                             source: source() ?? Logger.currentModule(filePath: (file)),
-                             file: file, function: function, line: line)
-        }
+        guard self.logLevel <= level &&
+                (tags == nil || !self.tagsFilter.isDisjoint(with: tags!)) else { return }
+        
+        self.handler.log(level: level,
+                         message: message(),
+                         metadata: metadata(),
+                         tags: tags,
+                         source: source() ?? Logger.currentModule(filePath: (file)),
+                         file: file, function: function, line: line)
     }
     #endif
 
@@ -122,7 +128,7 @@ extension Logger {
                     _ message: @autoclosure () -> Logger.Message,
                     metadata: @autoclosure () -> Logger.Metadata? = nil,
                     file: String = #fileID, function: String = #function, line: UInt = #line) {
-        self.log(level: level, message(), metadata: metadata(), source: nil, file: file, function: function, line: line)
+        self.log(level: level, message(), metadata: metadata(), tags: nil, source: nil, file: file, function: function, line: line)
     }
 
     #else
@@ -131,7 +137,7 @@ extension Logger {
                     _ message: @autoclosure () -> Logger.Message,
                     metadata: @autoclosure () -> Logger.Metadata? = nil,
                     file: String = #file, function: String = #function, line: UInt = #line) {
-        self.log(level: level, message(), metadata: metadata(), source: nil, file: file, function: function, line: line)
+        self.log(level: level, message(), metadata: metadata(), tags: nil, source: nil, file: file, function: function, line: line)
     }
     #endif
 
@@ -164,6 +170,16 @@ extension Logger {
             self.handler.logLevel = newValue
         }
     }
+    
+    @inlinable
+    public var tagsFilter: Logger.Tags {
+        get {
+            return self.handler.tagsFilter
+        }
+        set {
+            self.handler.tagsFilter = newValue
+        }
+    }
 }
 
 extension Logger {
@@ -187,20 +203,22 @@ extension Logger {
     ///            defaults to `#line`).
     #if compiler(>=5.3)
     @inlinable
-    public func trace(_ message: @autoclosure () -> Logger.Message,
+    public func trace(tags: Logger.Tags? = nil,
+                      _ message: @autoclosure () -> Logger.Message,
                       metadata: @autoclosure () -> Logger.Metadata? = nil,
                       source: @autoclosure () -> String? = nil,
                       file: String = #fileID, function: String = #function, line: UInt = #line) {
-        self.log(level: .trace, message(), metadata: metadata(), source: source(), file: file, function: function, line: line)
+        self.log(level: .trace, message(), metadata: metadata(), tags: tags, source: source(), file: file, function: function, line: line)
     }
 
     #else
     @inlinable
-    public func trace(_ message: @autoclosure () -> Logger.Message,
+    public func trace(tags: Logger.Tags? = nil,
+                      _ message: @autoclosure () -> Logger.Message,
                       metadata: @autoclosure () -> Logger.Metadata? = nil,
                       source: @autoclosure () -> String? = nil,
                       file: String = #file, function: String = #function, line: UInt = #line) {
-        self.log(level: .trace, message(), metadata: metadata(), source: source(), file: file, function: function, line: line)
+        self.log(level: .trace, message(), metadata: metadata(), tags: tags, source: source(), file: file, function: function, line: line)
     }
     #endif
 
@@ -220,6 +238,7 @@ extension Logger {
     @inlinable
     public func trace(_ message: @autoclosure () -> Logger.Message,
                       metadata: @autoclosure () -> Logger.Metadata? = nil,
+                      tags: Logger.Tags?,
                       file: String = #fileID, function: String = #function, line: UInt = #line) {
         self.trace(message(), metadata: metadata(), source: nil, file: file, function: function, line: line)
     }
@@ -255,9 +274,10 @@ extension Logger {
     @inlinable
     public func debug(_ message: @autoclosure () -> Logger.Message,
                       metadata: @autoclosure () -> Logger.Metadata? = nil,
+                      tags: Logger.Tags? = nil,
                       source: @autoclosure () -> String? = nil,
                       file: String = #fileID, function: String = #function, line: UInt = #line) {
-        self.log(level: .debug, message(), metadata: metadata(), source: source(), file: file, function: function, line: line)
+        self.log(level: .debug, message(), metadata: metadata(), tags: tags, source: source(), file: file, function: function, line: line)
     }
 
     #else
@@ -287,6 +307,7 @@ extension Logger {
     @inlinable
     public func debug(_ message: @autoclosure () -> Logger.Message,
                       metadata: @autoclosure () -> Logger.Metadata? = nil,
+                      tags: Logger.Tags?,
                       file: String = #fileID, function: String = #function, line: UInt = #line) {
         self.debug(message(), metadata: metadata(), source: nil, file: file, function: function, line: line)
     }
@@ -322,9 +343,10 @@ extension Logger {
     @inlinable
     public func info(_ message: @autoclosure () -> Logger.Message,
                      metadata: @autoclosure () -> Logger.Metadata? = nil,
+                     tags: Logger.Tags? = nil,
                      source: @autoclosure () -> String? = nil,
                      file: String = #fileID, function: String = #function, line: UInt = #line) {
-        self.log(level: .info, message(), metadata: metadata(), source: source(), file: file, function: function, line: line)
+        self.log(level: .info, message(), metadata: metadata(), tags: tags, source: source(), file: file, function: function, line: line)
     }
 
     #else
@@ -355,8 +377,9 @@ extension Logger {
     @inlinable
     public func info(_ message: @autoclosure () -> Logger.Message,
                      metadata: @autoclosure () -> Logger.Metadata? = nil,
+                     tags: Logger.Tags?,
                      file: String = #fileID, function: String = #function, line: UInt = #line) {
-        self.info(message(), metadata: metadata(), source: nil, file: file, function: function, line: line)
+        self.info(message(), metadata: metadata(), tags: tags, source: nil, file: file, function: function, line: line)
     }
 
     #else
@@ -390,9 +413,10 @@ extension Logger {
     @inlinable
     public func notice(_ message: @autoclosure () -> Logger.Message,
                        metadata: @autoclosure () -> Logger.Metadata? = nil,
+                       tags: Logger.Tags? = nil,
                        source: @autoclosure () -> String? = nil,
                        file: String = #fileID, function: String = #function, line: UInt = #line) {
-        self.log(level: .notice, message(), metadata: metadata(), source: source(), file: file, function: function, line: line)
+        self.log(level: .notice, message(), metadata: metadata(), tags: tags, source: source(), file: file, function: function, line: line)
     }
 
     #else
@@ -427,6 +451,7 @@ extension Logger {
     @inlinable
     public func notice(_ message: @autoclosure () -> Logger.Message,
                        metadata: @autoclosure () -> Logger.Metadata? = nil,
+                       tags: Logger.Tags?,
                        file: String = #fileID, function: String = #function, line: UInt = #line) {
         self.notice(message(), metadata: metadata(), source: nil, file: file, function: function, line: line)
     }
@@ -461,9 +486,10 @@ extension Logger {
     @inlinable
     public func warning(_ message: @autoclosure () -> Logger.Message,
                         metadata: @autoclosure () -> Logger.Metadata? = nil,
+                        tags: Logger.Tags? = nil,
                         source: @autoclosure () -> String? = nil,
                         file: String = #fileID, function: String = #function, line: UInt = #line) {
-        self.log(level: .warning, message(), metadata: metadata(), source: source(), file: file, function: function, line: line)
+        self.log(level: .warning, message(), metadata: metadata(), tags: tags, source: source(), file: file, function: function, line: line)
     }
 
     #else
@@ -494,6 +520,7 @@ extension Logger {
     @inlinable
     public func warning(_ message: @autoclosure () -> Logger.Message,
                         metadata: @autoclosure () -> Logger.Metadata? = nil,
+                        tags: Logger.Tags?,
                         file: String = #fileID, function: String = #function, line: UInt = #line) {
         self.warning(message(), metadata: metadata(), source: nil, file: file, function: function, line: line)
     }
@@ -529,9 +556,10 @@ extension Logger {
     @inlinable
     public func error(_ message: @autoclosure () -> Logger.Message,
                       metadata: @autoclosure () -> Logger.Metadata? = nil,
+                      tags: Logger.Tags? = nil,
                       source: @autoclosure () -> String? = nil,
                       file: String = #fileID, function: String = #function, line: UInt = #line) {
-        self.log(level: .error, message(), metadata: metadata(), source: source(), file: file, function: function, line: line)
+        self.log(level: .error, message(), metadata: metadata(), tags: tags, source: source(), file: file, function: function, line: line)
     }
 
     #else
@@ -562,6 +590,7 @@ extension Logger {
     @inlinable
     public func error(_ message: @autoclosure () -> Logger.Message,
                       metadata: @autoclosure () -> Logger.Metadata? = nil,
+                      tags: Logger.Tags?,
                       file: String = #fileID, function: String = #function, line: UInt = #line) {
         self.error(message(), metadata: metadata(), source: nil, file: file, function: function, line: line)
     }
@@ -596,9 +625,10 @@ extension Logger {
     @inlinable
     public func critical(_ message: @autoclosure () -> Logger.Message,
                          metadata: @autoclosure () -> Logger.Metadata? = nil,
+                         tags: Logger.Tags? = nil,
                          source: @autoclosure () -> String? = nil,
                          file: String = #fileID, function: String = #function, line: UInt = #line) {
-        self.log(level: .critical, message(), metadata: metadata(), source: source(), file: file, function: function, line: line)
+        self.log(level: .critical, message(), metadata: metadata(), tags: tags, source: source(), file: file, function: function, line: line)
     }
 
     #else
@@ -632,6 +662,7 @@ extension Logger {
     @inlinable
     public func critical(_ message: @autoclosure () -> Logger.Message,
                          metadata: @autoclosure () -> Logger.Metadata? = nil,
+                         tags: Logger.Tags?,
                          file: String = #fileID, function: String = #function, line: UInt = #line) {
         self.critical(message(), metadata: metadata(), source: nil, file: file, function: function, line: line)
     }
@@ -760,6 +791,16 @@ extension Logger {
         /// more heavy-weight operations to capture system state (such as capturing stack traces) to facilitate
         /// debugging.
         case critical
+    }
+    
+    public struct Tags: OptionSet {
+        public let rawValue: Int
+        public init(rawValue: Self.RawValue) {
+            self.rawValue = rawValue
+        }
+        
+        public static let _none    = Tags([])
+        public static let _all     = Tags(rawValue: -1)
     }
 
     /// Construct a `Logger` given a `label` identifying the creator of the `Logger`.
@@ -916,6 +957,7 @@ extension Logger {
 public struct MultiplexLogHandler: LogHandler {
     private var handlers: [LogHandler]
     private var effectiveLogLevel: Logger.Level
+    private var effectiveTagsFilter: Logger.Tags
 
     /// Create a `MultiplexLogHandler`.
     ///
@@ -926,6 +968,9 @@ public struct MultiplexLogHandler: LogHandler {
         assert(!handlers.isEmpty, "MultiplexLogHandler.handlers MUST NOT be empty")
         self.handlers = handlers
         self.effectiveLogLevel = handlers.map { $0.logLevel }.min() ?? .trace
+        self.effectiveTagsFilter = handlers.map { $0.tagsFilter }.reduce(into: [], { (result, tags) in
+            result.formUnion(tags)
+        })
     }
 
     public var logLevel: Logger.Level {
@@ -937,16 +982,39 @@ public struct MultiplexLogHandler: LogHandler {
             self.effectiveLogLevel = newValue
         }
     }
+    
+    public var tagsFilter: Logger.Tags {
+        get {
+            return self.effectiveTagsFilter
+        }
+        set {
+            self.mutatingForEachHandler { $0.tagsFilter = newValue }
+            self.effectiveTagsFilter = newValue
+        }
+    }
 
     public func log(level: Logger.Level,
-                    message: Logger.Message,
-                    metadata: Logger.Metadata?,
-                    source: String,
+                    message:  @autoclosure () -> Logger.Message,
+                    metadata:  @autoclosure () -> Logger.Metadata?,
+                    tags: Logger.Tags?,
+                    source:  @autoclosure () -> String,
                     file: String,
                     function: String,
                     line: UInt) {
+        var shouldLog = false
+        for handler in self.handlers {
+            if handler.logLevel <= level && !handler.tagsFilter.isDisjoint(with: tagsFilter) {
+                shouldLog = true
+                break
+            }
+        }
+        guard shouldLog else { return }
+        let message = message()
+        let metadata = metadata()
+        let source = source()
+        
         for handler in self.handlers where handler.logLevel <= level {
-            handler.log(level: level, message: message, metadata: metadata, source: source, file: file, function: function, line: line)
+            handler.log(level: level, message: message, metadata: metadata, tags: tags, source: source, file: file, function: function, line: line)
         }
     }
 
@@ -1082,6 +1150,7 @@ public struct StreamLogHandler: LogHandler {
     private let label: String
 
     public var logLevel: Logger.Level = .info
+    public var tagsFilter: Logger.Tags = ._all
 
     private var prettyMetadata: String?
     public var metadata = Logger.Metadata() {
@@ -1106,18 +1175,19 @@ public struct StreamLogHandler: LogHandler {
     }
 
     public func log(level: Logger.Level,
-                    message: Logger.Message,
-                    metadata: Logger.Metadata?,
-                    source: String,
+                    message:  @autoclosure () -> Logger.Message,
+                    metadata:  @autoclosure () -> Logger.Metadata?,
+                    tags: Logger.Tags?,
+                    source:  @autoclosure () -> String,
                     file: String,
                     function: String,
                     line: UInt) {
-        let prettyMetadata = metadata?.isEmpty ?? true
+        let prettyMetadata = metadata()?.isEmpty ?? true
             ? self.prettyMetadata
-            : self.prettify(self.metadata.merging(metadata!, uniquingKeysWith: { _, new in new }))
+            : self.prettify(self.metadata.merging(metadata()!, uniquingKeysWith: { _, new in new }))
 
         var stream = self.stream
-        stream.write("\(self.timestamp()) \(level) \(self.label) :\(prettyMetadata.map { " \($0)" } ?? "") [\(source)] \(message)\n")
+        stream.write("\(self.timestamp()) \(level) \(self.label)\(tags.map { " [\($0)]"} ?? "") :\(prettyMetadata.map { " \($0)" } ?? "") [\(source())] \(message())\n")
     }
 
     private func prettify(_ metadata: Logger.Metadata) -> String? {
@@ -1143,7 +1213,7 @@ public struct StreamLogHandler: LogHandler {
 public struct SwiftLogNoOpLogHandler: LogHandler {
     public init() {}
 
-    @inlinable public func log(level: Logger.Level, message: Logger.Message, metadata: Logger.Metadata?, file: String, function: String, line: UInt) {}
+    @inlinable public func log(level: Logger.Level, message:  @autoclosure () -> Logger.Message, metadata:  @autoclosure () -> Logger.Metadata?, tags: Logger.Tags?, source:  @autoclosure () -> String,file: String, function: String, line: UInt) {}
 
     @inlinable public subscript(metadataKey _: String) -> Logger.Metadata.Value? {
         get {
@@ -1162,6 +1232,13 @@ public struct SwiftLogNoOpLogHandler: LogHandler {
     @inlinable public var logLevel: Logger.Level {
         get {
             return .critical
+        }
+        set {}
+    }
+    
+    @inlinable public var tagsFilter: Logger.Tags {
+        get {
+            return []
         }
         set {}
     }
