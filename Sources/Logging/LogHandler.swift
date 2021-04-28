@@ -134,10 +134,11 @@ public protocol LogHandler {
              function: String,
              line: UInt)
 
-    /// SwiftLog 1.0 compatibility method. Please do _not_ implement, implement
-    /// `log(level:message:metadata:source:file:function:line:)` instead.
-    @available(*, deprecated, renamed: "log(level:message:metadata:source:file:function:line:)")
-    func log(level: Logging.Logger.Level, message: Logging.Logger.Message, metadata: Logging.Logger.Metadata?, file: String, function: String, line: UInt)
+// Unearth fork: prevent use of deprecated methods -- no reason to maintain internally
+//    /// SwiftLog 1.0 compatibility method. Please do _not_ implement, implement
+//    /// `log(level:message:metadata:source:file:function:line:)` instead.
+//    @available(*, deprecated, renamed: "log(level:message:metadata:source:file:function:line:)")
+//    func log(level: Logging.Logger.Level, message: Logging.Logger.Message, metadata: Logging.Logger.Metadata?, file: String, function: String, line: UInt)
 
     /// Add, remove, or change the logging metadata.
     ///
@@ -163,26 +164,28 @@ public protocol LogHandler {
     var logLevel: Logger.Level { get set }
 }
 
-extension LogHandler {
-    @available(*, deprecated, message: "You should implement this method instead of using the default implementation")
-    public func log(level: Logger.Level,
-                    message: Logger.Message,
-                    metadata: Logger.Metadata?,
-                    source: String,
-                    file: String,
-                    function: String,
-                    line: UInt) {
-        self.log(level: level, message: message, metadata: metadata, file: file, function: function, line: line)
-    }
-
-    @available(*, deprecated, renamed: "log(level:message:metadata:source:file:function:line:)")
-    public func log(level: Logging.Logger.Level, message: Logging.Logger.Message, metadata: Logging.Logger.Metadata?, file: String, function: String, line: UInt) {
-        self.log(level: level,
-                 message: message,
-                 metadata: metadata,
-                 source: Logger.currentModule(filePath: file),
-                 file: file,
-                 function: function,
-                 line: line)
-    }
-}
+// Unearth fork: prevent use of deprecated methods -- no reason to maintain internally
+//
+//extension LogHandler {
+//    @available(*, deprecated, message: "You should implement this method instead of using the default implementation")
+//    public func log(level: Logger.Level,
+//                    message: Logger.Message,
+//                    metadata: Logger.Metadata?,
+//                    source: String,
+//                    file: String,
+//                    function: String,
+//                    line: UInt) {
+//        self.log(level: level, message: message, metadata: metadata, file: file, function: function, line: line)
+//    }
+//
+//    @available(*, deprecated, renamed: "log(level:message:metadata:source:file:function:line:)")
+//    public func log(level: Logging.Logger.Level, message: Logging.Logger.Message, metadata: Logging.Logger.Metadata?, file: String, function: String, line: UInt) {
+//        self.log(level: level,
+//                 message: message,
+//                 metadata: metadata,
+//                 source: Logger.currentModule(filePath: file),
+//                 file: file,
+//                 function: function,
+//                 line: line)
+//    }
+//}
