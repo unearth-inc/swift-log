@@ -220,22 +220,22 @@ extension Logger {
     ///                it defaults to `#function`).
     ///    - line: The line this log message originates from (there's usually no need to pass it explicitly as it
     ///            defaults to `#line`).
-    #if compiler(>=5.3)
-    @inlinable
-    public func trace(_ message: @autoclosure () -> Logger.Message,
-                      metadata: @autoclosure () -> Logger.Metadata? = nil,
-                      file: String = #fileID, function: String = #function, line: UInt = #line) {
-        self.trace(message(), metadata: metadata(), source: nil, file: file, function: function, line: line)
-    }
-
-    #else
-    @inlinable
-    public func trace(_ message: @autoclosure () -> Logger.Message,
-                      metadata: @autoclosure () -> Logger.Metadata? = nil,
-                      file: String = #file, function: String = #function, line: UInt = #line) {
-        self.trace(message(), metadata: metadata(), source: nil, file: file, function: function, line: line)
-    }
-    #endif
+//    #if compiler(>=5.3)
+//    @inlinable
+//    public func trace(_ message: @autoclosure () -> Logger.Message,
+//                      metadata: @autoclosure () -> Logger.Metadata? = nil,
+//                      file: String = #fileID, function: String = #function, line: UInt = #line) {
+//        self.trace(message(), metadata: metadata(), source: nil, file: file, function: function, line: line)
+//    }
+//
+//    #else
+//    @inlinable
+//    public func trace(_ message: @autoclosure () -> Logger.Message,
+//                      metadata: @autoclosure () -> Logger.Metadata? = nil,
+//                      file: String = #file, function: String = #function, line: UInt = #line) {
+//        self.trace(message(), metadata: metadata(), source: nil, file: file, function: function, line: line)
+//    }
+//    #endif
 
     /// Log a message passing with the `Logger.Level.debug` log level.
     ///
@@ -287,22 +287,22 @@ extension Logger {
     ///                it defaults to `#function`).
     ///    - line: The line this log message originates from (there's usually no need to pass it explicitly as it
     ///            defaults to `#line`).
-    #if compiler(>=5.3)
-    @inlinable
-    public func debug(_ message: @autoclosure () -> Logger.Message,
-                      metadata: @autoclosure () -> Logger.Metadata? = nil,
-                      file: String = #fileID, function: String = #function, line: UInt = #line) {
-        self.debug(message(), metadata: metadata(), source: nil, file: file, function: function, line: line)
-    }
-
-    #else
-    @inlinable
-    public func debug(_ message: @autoclosure () -> Logger.Message,
-                      metadata: @autoclosure () -> Logger.Metadata? = nil,
-                      file: String = #file, function: String = #function, line: UInt = #line) {
-        self.debug(message(), metadata: metadata(), source: nil, file: file, function: function, line: line)
-    }
-    #endif
+//    #if compiler(>=5.3)
+//    @inlinable
+//    public func debug(_ message: @autoclosure () -> Logger.Message,
+//                      metadata: @autoclosure () -> Logger.Metadata? = nil,
+//                      file: String = #fileID, function: String = #function, line: UInt = #line) {
+//        self.debug(message(), metadata: metadata(), source: nil, file: file, function: function, line: line)
+//    }
+//
+//    #else
+//    @inlinable
+//    public func debug(_ message: @autoclosure () -> Logger.Message,
+//                      metadata: @autoclosure () -> Logger.Metadata? = nil,
+//                      file: String = #file, function: String = #function, line: UInt = #line) {
+//        self.debug(message(), metadata: metadata(), source: nil, file: file, function: function, line: line)
+//    }
+//    #endif
 
     /// Log a message passing with the `Logger.Level.info` log level.
     ///
@@ -355,22 +355,22 @@ extension Logger {
     ///                it defaults to `#function`).
     ///    - line: The line this log message originates from (there's usually no need to pass it explicitly as it
     ///            defaults to `#line`).
-    #if compiler(>=5.3)
-    @inlinable
-    public func info(_ message: @autoclosure () -> Logger.Message,
-                     metadata: @autoclosure () -> Logger.Metadata? = nil,
-                     file: String = #fileID, function: String = #function, line: UInt = #line) {
-        self.info(message(), metadata: metadata(), source: nil, file: file, function: function, line: line)
-    }
-
-    #else
-    @inlinable
-    public func info(_ message: @autoclosure () -> Logger.Message,
-                     metadata: @autoclosure () -> Logger.Metadata? = nil,
-                     file: String = #file, function: String = #function, line: UInt = #line) {
-        self.info(message(), metadata: metadata(), source: nil, file: file, function: function, line: line)
-    }
-    #endif
+//    #if compiler(>=5.3)
+//    @inlinable
+//    public func info(_ message: @autoclosure () -> Logger.Message,
+//                     metadata: @autoclosure () -> Logger.Metadata? = nil,
+//                     file: String = #fileID, function: String = #function, line: UInt = #line) {
+//        self.info(message(), metadata: metadata(), source: nil, file: file, function: function, line: line)
+//    }
+//
+//    #else
+//    @inlinable
+//    public func info(_ message: @autoclosure () -> Logger.Message,
+//                     metadata: @autoclosure () -> Logger.Metadata? = nil,
+//                     file: String = #file, function: String = #function, line: UInt = #line) {
+//        self.info(message(), metadata: metadata(), source: nil, file: file, function: function, line: line)
+//    }
+//    #endif
 
     /// Log a message passing with the `Logger.Level.notice` log level.
     ///
@@ -427,21 +427,21 @@ extension Logger {
     ///                it defaults to `#function`).
     ///    - line: The line this log message originates from (there's usually no need to pass it explicitly as it
     ///            defaults to `#line`).
-    #if compiler(>=5.3)
-    @inlinable
-    public func notice(_ message: @autoclosure () -> Logger.Message,
-                       metadata: @autoclosure () -> Logger.Metadata? = nil,
-                       file: String = #fileID, function: String = #function, line: UInt = #line) {
-        self.notice(message(), metadata: metadata(), source: nil, file: file, function: function, line: line)
-    }
-
-    #else
-    public func notice(_ message: @autoclosure () -> Logger.Message,
-                       metadata: @autoclosure () -> Logger.Metadata? = nil,
-                       file: String = #file, function: String = #function, line: UInt = #line) {
-        self.notice(message(), metadata: metadata(), source: nil, file: file, function: function, line: line)
-    }
-    #endif
+//    #if compiler(>=5.3)
+//    @inlinable
+//    public func notice(_ message: @autoclosure () -> Logger.Message,
+//                       metadata: @autoclosure () -> Logger.Metadata? = nil,
+//                       file: String = #fileID, function: String = #function, line: UInt = #line) {
+//        self.notice(message(), metadata: metadata(), source: nil, file: file, function: function, line: line)
+//    }
+//
+//    #else
+//    public func notice(_ message: @autoclosure () -> Logger.Message,
+//                       metadata: @autoclosure () -> Logger.Metadata? = nil,
+//                       file: String = #file, function: String = #function, line: UInt = #line) {
+//        self.notice(message(), metadata: metadata(), source: nil, file: file, function: function, line: line)
+//    }
+//    #endif
 
     /// Log a message passing with the `Logger.Level.warning` log level.
     ///
@@ -494,22 +494,22 @@ extension Logger {
     ///                it defaults to `#function`).
     ///    - line: The line this log message originates from (there's usually no need to pass it explicitly as it
     ///            defaults to `#line`).
-    #if compiler(>=5.3)
-    @inlinable
-    public func warning(_ message: @autoclosure () -> Logger.Message,
-                        metadata: @autoclosure () -> Logger.Metadata? = nil,
-                        file: String = #fileID, function: String = #function, line: UInt = #line) {
-        self.warning(message(), metadata: metadata(), source: nil, file: file, function: function, line: line)
-    }
-
-    #else
-    @inlinable
-    public func warning(_ message: @autoclosure () -> Logger.Message,
-                        metadata: @autoclosure () -> Logger.Metadata? = nil,
-                        file: String = #file, function: String = #function, line: UInt = #line) {
-        self.warning(message(), metadata: metadata(), source: nil, file: file, function: function, line: line)
-    }
-    #endif
+//    #if compiler(>=5.3)
+//    @inlinable
+//    public func warning(_ message: @autoclosure () -> Logger.Message,
+//                        metadata: @autoclosure () -> Logger.Metadata? = nil,
+//                        file: String = #fileID, function: String = #function, line: UInt = #line) {
+//        self.warning(message(), metadata: metadata(), source: nil, file: file, function: function, line: line)
+//    }
+//
+//    #else
+//    @inlinable
+//    public func warning(_ message: @autoclosure () -> Logger.Message,
+//                        metadata: @autoclosure () -> Logger.Metadata? = nil,
+//                        file: String = #file, function: String = #function, line: UInt = #line) {
+//        self.warning(message(), metadata: metadata(), source: nil, file: file, function: function, line: line)
+//    }
+//    #endif
 
     /// Log a message passing with the `Logger.Level.error` log level.
     ///
@@ -562,22 +562,22 @@ extension Logger {
     ///                it defaults to `#function`).
     ///    - line: The line this log message originates from (there's usually no need to pass it explicitly as it
     ///            defaults to `#line`).
-    #if compiler(>=5.3)
-    @inlinable
-    public func error(_ message: @autoclosure () -> Logger.Message,
-                      metadata: @autoclosure () -> Logger.Metadata? = nil,
-                      file: String = #fileID, function: String = #function, line: UInt = #line) {
-        self.error(message(), metadata: metadata(), source: nil, file: file, function: function, line: line)
-    }
-
-    #else
-    @inlinable
-    public func error(_ message: @autoclosure () -> Logger.Message,
-                      metadata: @autoclosure () -> Logger.Metadata? = nil,
-                      file: String = #file, function: String = #function, line: UInt = #line) {
-        self.error(message(), metadata: metadata(), source: nil, file: file, function: function, line: line)
-    }
-    #endif
+//    #if compiler(>=5.3)
+//    @inlinable
+//    public func error(_ message: @autoclosure () -> Logger.Message,
+//                      metadata: @autoclosure () -> Logger.Metadata? = nil,
+//                      file: String = #fileID, function: String = #function, line: UInt = #line) {
+//        self.error(message(), metadata: metadata(), source: nil, file: file, function: function, line: line)
+//    }
+//
+//    #else
+//    @inlinable
+//    public func error(_ message: @autoclosure () -> Logger.Message,
+//                      metadata: @autoclosure () -> Logger.Metadata? = nil,
+//                      file: String = #file, function: String = #function, line: UInt = #line) {
+//        self.error(message(), metadata: metadata(), source: nil, file: file, function: function, line: line)
+//    }
+//    #endif
 
     /// Log a message passing with the `Logger.Level.critical` log level.
     ///
@@ -632,22 +632,22 @@ extension Logger {
     ///                it defaults to `#function`).
     ///    - line: The line this log message originates from (there's usually no need to pass it explicitly as it
     ///            defaults to `#line`).
-    #if compiler(>=5.3)
-    @inlinable
-    public func critical(_ message: @autoclosure () -> Logger.Message,
-                         metadata: @autoclosure () -> Logger.Metadata? = nil,
-                         file: String = #fileID, function: String = #function, line: UInt = #line) {
-        self.critical(message(), metadata: metadata(), source: nil, file: file, function: function, line: line)
-    }
-
-    #else
-    @inlinable
-    public func critical(_ message: @autoclosure () -> Logger.Message,
-                         metadata: @autoclosure () -> Logger.Metadata? = nil,
-                         file: String = #file, function: String = #function, line: UInt = #line) {
-        self.critical(message(), metadata: metadata(), source: nil, file: file, function: function, line: line)
-    }
-    #endif
+//    #if compiler(>=5.3)
+//    @inlinable
+//    public func critical(_ message: @autoclosure () -> Logger.Message,
+//                         metadata: @autoclosure () -> Logger.Metadata? = nil,
+//                         file: String = #fileID, function: String = #function, line: UInt = #line) {
+//        self.critical(message(), metadata: metadata(), source: nil, file: file, function: function, line: line)
+//    }
+//
+//    #else
+//    @inlinable
+//    public func critical(_ message: @autoclosure () -> Logger.Message,
+//                         metadata: @autoclosure () -> Logger.Metadata? = nil,
+//                         file: String = #file, function: String = #function, line: UInt = #line) {
+//        self.critical(message(), metadata: metadata(), source: nil, file: file, function: function, line: line)
+//    }
+//    #endif
 }
 
 /// The `LoggingSystem` is a global facility where the default logging backend implementation (`LogHandler`) can be
