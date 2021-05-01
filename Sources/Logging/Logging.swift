@@ -939,12 +939,24 @@ public struct MultiplexLogHandler: LogHandler {
     }
 
     public func log(level: Logger.Level,
-                    message: Logger.Message,
-                    metadata: Logger.Metadata?,
-                    source: String,
+                    message:  @autoclosure () -> Logger.Message,
+                    metadata:  @autoclosure () -> Logger.Metadata?,
+                    source:  @autoclosure () -> String,
                     file: String,
                     function: String,
                     line: UInt) {
+        var shouldLog = false
+        for handler in self.handlers {
+            if handler.logLevel <= level {
+                shouldLog = true
+                break
+            }
+        }
+        guard shouldLog else { return }
+        let message = message()
+        let metadata = metadata()
+        let source = source()
+        
         for handler in self.handlers where handler.logLevel <= level {
             handler.log(level: level, message: message, metadata: metadata, source: source, file: file, function: function, line: line)
         }
@@ -1106,18 +1118,18 @@ public struct StreamLogHandler: LogHandler {
     }
 
     public func log(level: Logger.Level,
-                    message: Logger.Message,
-                    metadata: Logger.Metadata?,
-                    source: String,
+                    message:  @autoclosure () -> Logger.Message,
+                    metadata:  @autoclosure () -> Logger.Metadata?,
+                    source:  @autoclosure () -> String,
                     file: String,
                     function: String,
                     line: UInt) {
-        let prettyMetadata = metadata?.isEmpty ?? true
+        let prettyMetadata = metadata()?.isEmpty ?? true
             ? self.prettyMetadata
-            : self.prettify(self.metadata.merging(metadata!, uniquingKeysWith: { _, new in new }))
+            : self.prettify(self.metadata.merging(metadata()!, uniquingKeysWith: { _, new in new }))
 
         var stream = self.stream
-        stream.write("\(self.timestamp()) \(level) \(self.label) :\(prettyMetadata.map { " \($0)" } ?? "") [\(source)] \(message)\n")
+        stream.write("\(self.timestamp()) \(level) \(self.label) :\(prettyMetadata.map { " \($0)" } ?? "") [\(source())] \(message())\n")
     }
 
     private func prettify(_ metadata: Logger.Metadata) -> String? {
@@ -1143,7 +1155,7 @@ public struct StreamLogHandler: LogHandler {
 public struct SwiftLogNoOpLogHandler: LogHandler {
     public init() {}
 
-    @inlinable public func log(level: Logger.Level, message: Logger.Message, metadata: Logger.Metadata?, file: String, function: String, line: UInt) {}
+    @inlinable public func log(level: Logger.Level, message:  @autoclosure () -> Logger.Message, metadata:  @autoclosure () -> Logger.Metadata?, source:  @autoclosure () -> String,file: String, function: String, line: UInt) {}
 
     @inlinable public subscript(metadataKey _: String) -> Logger.Metadata.Value? {
         get {

@@ -127,9 +127,9 @@ public protocol LogHandler {
     ///     - function: The function the log line was emitted from.
     ///     - line: The line the log message was emitted from.
     func log(level: Logger.Level,
-             message: Logger.Message,
-             metadata: Logger.Metadata?,
-             source: String,
+             message:  @autoclosure () -> Logger.Message,
+             metadata:  @autoclosure () -> Logger.Metadata?,
+             source:  @autoclosure () -> String,
              file: String,
              function: String,
              line: UInt)
